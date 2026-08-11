@@ -15,7 +15,7 @@ This repository currently contains:
 - Reserved manifest surface and dependencies (AppAuth-Android, Ktor) for the SMART App Launch flow, not yet wired up
 - Full design documentation (this README, ADRs, architecture doc, risk register)
 
-Not yet built: the actual SMART App Launch OAuth2/PKCE flow, FHIR resource models and fetching, any Compose screens beyond a placeholder, public client registration against the SMART sandbox, and a release pipeline.
+Not yet built: the actual SMART App Launch OAuth2/PKCE flow, FHIR resource models and fetching, any Compose screens beyond a placeholder, and public client registration against the SMART sandbox.
 
 ## Why these choices
 
@@ -53,6 +53,29 @@ Min SDK 26, target/compile SDK 35, Kotlin 2.0.21, Jetpack Compose.
 ## Downloading
 
 Once a release is cut, the APK will be attached to this repo's [Releases](https://github.com/WhymzikalZyxxyZ/chart/releases) page, and linked from the Technologist section of [zyxwonderland.xyz](https://zyxwonderland.xyz). Installing requires enabling "install unknown apps," since this isn't distributed through the Play Store.
+
+## Updating
+
+Same as MEND: no Play Store, so no automatic-update channel. This is tracked as a follow-up — CHART doesn't yet have its own in-app update checker.
+
+## Cutting a release
+
+The release workflow (`.github/workflows/release.yml`) builds and signs the release APK and attaches it to a GitHub Release whenever a tag matching `v*.*.*` is pushed:
+
+```
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+This requires a signing keystore, set up once — **CHART has its own keystore, separate from MEND's.** Each app gets its own signing identity rather than sharing one, so compromising or losing one app's key never affects another's.
+
+1. Generate a keystore (requires a JDK): `keytool -genkeypair -v -keystore chart-release.keystore -alias chart -keyalg RSA -keysize 2048 -validity 10000`
+2. **Back this file up somewhere safe outside git.** It's the app's permanent signing identity — losing it means any future release can no longer update an already-installed copy of the app.
+3. Base64-encode it and add these as repo secrets (Settings → Secrets and variables → Actions):
+   - `RELEASE_KEYSTORE_BASE64` — `base64 -w0 chart-release.keystore`
+   - `RELEASE_STORE_PASSWORD`, `RELEASE_KEY_ALIAS`, `RELEASE_KEY_PASSWORD` — matching what you set in step 1
+
+Without these secrets, the workflow fails fast at the "Decode release keystore" step rather than silently producing an unsigned APK.
 
 ## License
 
