@@ -1,0 +1,17 @@
+*.iml
+.gradle/
+/local.properties
+/.idea/
+.DS_Store
+/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+local.properties
+
+.env
+
+# Signing keystore — never commit. Kept outside this repo entirely
+# (see README "Cutting a release"), this rule is a backstop only.
+*.keystore
+*.jks
