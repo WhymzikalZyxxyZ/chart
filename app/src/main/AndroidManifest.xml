@@ -22,9 +22,9 @@
         <!--
           AppAuth's RedirectUriReceiverActivity is added automatically by its
           Gradle plugin manifest merger, keyed off appAuthRedirectScheme in
-          defaultConfig. No SMART launch flow is wired up yet — see
-          docs/adr/002-fhir-source-and-auth.md — this is the reserved surface
-          for it.
+          defaultConfig — it routes the SMART sandbox's OAuth redirect back
+          into MainActivity's ActivityResultLauncher. See
+          docs/adr/002-fhir-source-and-auth.md and auth/SmartAuthManager.kt.
         -->
 
     </application>

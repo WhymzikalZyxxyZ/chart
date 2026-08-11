@@ -11,6 +11,7 @@ lifecycle         = "2.8.6"
 junit             = "4.13.2"
 coreKtx           = "1.13.1"
 appauth           = "0.11.1"
+securityCrypto    = "1.1.0-alpha06"
 
 [libraries]
 kotlinx-coroutines-core    = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core",    version.ref = "coroutines" }
@@ -31,6 +32,10 @@ core-ktx    = { group = "androidx.core",        name = "core-ktx",    version.re
 # Code + PKCE via Custom Tabs — the standard choice for a SMART App Launch
 # client rather than hand-rolling PKCE. See docs/adr/002-fhir-source-and-auth.md.
 appauth = { group = "net.openid", name = "appauth", version.ref = "appauth" }
+
+# EncryptedSharedPreferences — Keystore-backed storage for the OAuth refresh
+# token only, never clinical data. See docs/adr/004-no-persistent-storage.md.
+security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 
 compose-bom                = { group = "androidx.compose",           name = "compose-bom",              version.ref = "composeBom" }
 compose-ui                 = { group = "androidx.compose.ui",        name = "ui" }

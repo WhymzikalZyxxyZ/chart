@@ -48,7 +48,7 @@ Pre-generated realistic synthetic patient records (Synthea is a widely-used open
 
 **Negative / accepted tradeoffs:**
 - Significantly more implementation surface than Options B or C — full OAuth2 flow, Custom Tabs, redirect URI intent-filter, token refresh handling
-- Reserved manifest surface exists in this scaffold (`manifestPlaceholders["appAuthRedirectScheme"]` in `app/build.gradle.kts`) but the actual launch flow, token exchange, and FHIR resource fetching are **not implemented yet** — this ADR documents the target design, not current functionality
+- The standalone launch flow, token exchange, silent refresh-token resume, and a minimal `Patient` fetch are now implemented (`app/src/main/kotlin/xyz/zyxwonderland/chart/auth/`, `fhir/`, `ui/launch/`) — see Notes for what's still deliberately out of scope
 
 **Risks:**
 - The SMART Health IT public sandbox is shared community infrastructure with no SLA — same caveat as MEND's Overpass API dependency, see `docs/RISKS.md`
@@ -57,4 +57,6 @@ Pre-generated realistic synthetic patient records (Synthea is a widely-used open
 ## Notes
 
 - SMART App Launch spec: the "Standalone Launch" sequence (as opposed to "EHR Launch," which requires being invoked from inside an EHR's UI) is the correct one for a self-contained mobile app — see `docs/architecture/overview.md` for the sequence diagram.
-- Follow-up, not yet built: actual AppAuth authorization request/response handling, token storage strategy (see [ADR-003](003-no-backend-required.md) and [ADR-004](004-no-persistent-storage.md)), and the FHIR resource-fetching/display layer.
+- **Implemented**: discovery (`.well-known/smart-configuration`), the Custom Tabs authorization request with PKCE, authorization code → token exchange, silent refresh-token resume on app launch, and a `Patient` resource fetch/display as end-to-end proof of the round-trip.
+- **Client registration**: none needed. SMART Health IT's public sandbox (`smart-on-fhir/smart-launcher-v2`) explicitly supports unregistered public clients for exactly this kind of testing — `client_id` is the self-chosen string `chart-android`, not a credential.
+- **Deliberately not built yet**: `Condition`/`MedicationRequest`/`Observation` screens (the FHIR client function is generic enough that adding these is additive, not a redesign) and automatic mid-session access-token refresh on a 401 (only refresh-on-app-launch is implemented; a token expiring mid-session currently surfaces as an error rather than silently recovering).

@@ -84,6 +84,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.appauth)
+    implementation(libs.security.crypto)
 
     debugImplementation(libs.compose.ui.tooling)
 

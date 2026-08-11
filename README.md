@@ -6,18 +6,16 @@ CHART is an Android app that demonstrates SMART on FHIR integration — the OAut
 
 > ⚠️ **All data shown by this app is synthetic test data from a public sandbox — never real patient information.** This app is not built, reviewed, or authorized to handle real protected health information (PHI), and must never be pointed at a real organization's FHIR endpoint without a full security review. See [`docs/RISKS.md`](docs/RISKS.md).
 
-> **This repo is currently in its design/documentation phase.** No app functionality is implemented yet — see [Status](#status) below.
-
 ## Status
 
-This repository currently contains:
-- A minimal, buildable Android/Compose skeleton (`app/`) with no feature logic
-- Reserved manifest surface and dependencies (AppAuth-Android, Ktor) for the SMART App Launch flow, not yet wired up
-- Full design documentation (this README, ADRs, architecture doc, risk register)
+The SMART App Launch flow is implemented and working end-to-end against the SMART Health IT public sandbox:
+- Connect → Custom Tab login/patient-picker → OAuth2 Authorization Code + PKCE exchange (AppAuth-Android) → fetch and display the authenticated `Patient` resource
+- Refresh token persisted in Keystore-backed `EncryptedSharedPreferences` (`auth/TokenStore.kt`); silently resumed on next app launch, no re-login needed
+- No client registration against the sandbox required or done — see [ADR-002](docs/adr/002-fhir-source-and-auth.md)
 
-Not yet built: the actual SMART App Launch OAuth2/PKCE flow, FHIR resource models and fetching, any Compose screens beyond a placeholder, and public client registration against the SMART sandbox.
+Not yet built: `Condition`/`MedicationRequest`/`Observation` fetching and screens (the FHIR client is written generically enough to extend, not redesign), and automatic mid-session access-token refresh on a 401 (only refresh-on-app-launch exists today).
 
-This repository also now has an in-app update checker (`xyz.zyxwonderland.chart.update`) and a signed release pipeline — see [Updating](#updating) and [Cutting a release](#cutting-a-release) below.
+This repository also has an in-app update checker (`xyz.zyxwonderland.chart.update`) and a signed release pipeline — see [Updating](#updating) and [Cutting a release](#cutting-a-release) below.
 
 ## Why these choices
 
